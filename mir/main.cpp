@@ -24,15 +24,19 @@ static MIR_context_t ctx;
 static const int optlevel = 2;
 
 static void *import_resolver(const char *name) {
-	printf("import_resolver: %s\n", name);
-	fflush(stdout);
 	if (strcmp(name, "sys_print") == 0) {
 		return (void *)sys_print;
 	} else if (strcmp(name, "sys_vfetch") == 0) {
 		return (void *)sys_vfetch;
 	} else if (strcmp(name, "sys_vstore") == 0) {
 		return (void *)sys_vstore;
+	} else if (strcmp(name, "malloc") == 0) {
+		return (void *)malloc;
+	} else if (strcmp(name, "free") == 0) {
+		return (void *)free;
 	}
+	printf("import_resolver missing: %s\n", name);
+	fflush(stdout);
 	return nullptr;
 }
 
@@ -75,7 +79,7 @@ int main() {
 
 #define VERBOSE_COMPILE 0
 
-static Variant do_compile(const std::string &code, const std::string &entry) {
+static Variant do_compile(const std::string &source_code, const std::string &entry) {
 	std::array<const char*, 0> include_dirs = {
 	};
 	std::array<c2mir_macro_command, 1> macro_commands = {
@@ -83,9 +87,31 @@ static Variant do_compile(const std::string &code, const std::string &entry) {
 	};
 
 #if VERBOSE_COMPILE
-	printf("Compiling C code: %s\n", code.c_str());
+	printf("Compiling C code: %s\n", source_code.c_str());
 	fflush(stdout);
 #endif
+
+	// Add our own API
+	std::string code = R"(
+	extern void sys_vfetch(unsigned, void *, int);
+	extern void sys_vstore(unsigned *, int, const void *, unsigned);
+	extern void print_int(int);
+	extern void print_float(float);
+	extern void print_string(const char*);
+	extern void print_ptr(void*);
+	extern void *malloc(unsigned long);
+	extern void free(void*);
+	struct Variant {
+		long type;
+		long value;
+	};
+	struct VectorF32 {
+		float *f_begin;
+		float *f_end;
+		float *f_cap;
+	};
+)";
+	code += source_code;
 
 	Data data;
 	data.code = code.c_str();
