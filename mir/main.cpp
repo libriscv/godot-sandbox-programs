@@ -8,6 +8,11 @@ extern "C" {
 EXTERN_SYSCALL(void, sys_vstore, unsigned, const void *, size_t);
 EXTERN_SYSCALL(void, sys_vfetch, unsigned, void *, int);
 
+// Workaround for a bug in Newlib, Mir or C2Mir
+char *getenv(const char *name) {
+	return "";
+}
+
 struct Data {
 	const char *code;
 	const char *code_end;
@@ -156,7 +161,7 @@ static Variant do_compile(const std::string &source_code, const std::string &ent
 	fun_addr = (Variant(*)())mir_get_func(ctx, module, entry.c_str());
 
 	// Finish the code-generation
-	//MIR_gen_finish(ctx);
+	MIR_gen_finish(ctx);
 
 	if (!fun_addr) {
 		fprintf(stderr, "Function %s not found\n", entry.c_str());
