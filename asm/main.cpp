@@ -8,9 +8,7 @@ using machine_t = riscv::Machine<riscv::RISCV64>;
 EMBED_BINARY(asmjit, "../asmjit/.build/asmjit");
 static const std::string_view asmjit_bin(asmjit, asmjit_size);
 
-extern "C"
-Variant assemble(String input) {
-
+static Variant assemble(String input) {
 	static machine_t master_machine(asmjit_bin, {
 		.memory_max = 4UL << 20,
 		.stack_size = 256UL << 10,
@@ -45,3 +43,11 @@ Variant assemble(String input) {
 
 	return Callable::Create<Variant()>(callback);
 }
+
+SANDBOX_API({
+	.name = "assemble",
+	.address = (void*)&assemble,
+	.description = "Assemble RISC-V assembly code and return a callable function",
+	.return_type = "Callable",
+	.arguments = "String assembly_code",
+});
