@@ -1,1 +1,1 @@
-../godot-riscv/program/cpp/cmake
+ext/godot-sandbox/program/cpp/cmake

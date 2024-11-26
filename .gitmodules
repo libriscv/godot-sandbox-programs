@@ -1,0 +1,3 @@
+[submodule "ext/godot-sandbox"]
+	path = ext/godot-sandbox
+	url = https://github.com/libriscv/godot-sandbox.git
