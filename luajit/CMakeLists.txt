@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(lua)
 
+if (NOT TARGET sandbox_api)
 add_subdirectory(../cmake cmake)
+endif()
 
 add_sandbox_program(lua
 	main.cpp

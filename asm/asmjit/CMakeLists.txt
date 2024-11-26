@@ -19,7 +19,7 @@ set_target_properties(riscv_asmjit PROPERTIES
 target_link_libraries(riscv_asmjit INTERFACE zlibstatic)
 
 # Add the asmjit sandbox program
-add_executable(asmjit
+add_executable(assembler
 	asmjit_main.c
 )
-target_link_libraries(asmjit PRIVATE -static riscv_asmjit)
+target_link_libraries(assembler PRIVATE -static riscv_asmjit)

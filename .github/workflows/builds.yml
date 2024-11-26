@@ -1,0 +1,57 @@
+name: Godot Sandbox Examples
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    permissions:
+      contents: write
+      actions: write
+    runs-on: ubuntu-24.04
+    env:
+      CC: riscv64-linux-gnu-gcc-14
+      CXX: riscv64-linux-gnu-g++-14
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y g++-14-riscv64-linux-gnu git libluajit-5.1-dev
+        git submodule update --init
+
+    - name: Build all examples
+      working-directory: ${{github.workspace}}
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake --build build --parallel 8
+
+    - name: Delete draft release(s)
+      uses: hugo19941994/delete-draft-releases@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Archive
+      shell: sh
+      run: |
+        ls
+        mkdir -p examples
+        cp build/bin/* examples/
+        zip -r "examples.zip" examples
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: Examples Nightly
+        files: |
+          examples.zip
+        generate_release_notes: true
+        draft: true
+        prerelease: true
+        fail_on_unmatched_files: true

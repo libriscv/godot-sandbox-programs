@@ -5,7 +5,7 @@ using AsmCallback = Variant(*)();
 using namespace riscv;
 using machine_t = riscv::Machine<riscv::RISCV64>;
 
-EMBED_BINARY(asmjit, "../asmjit/.build/asmjit");
+EMBED_BINARY(asmjit, "asmjit/assembler");
 static const std::string_view asmjit_bin(asmjit, asmjit_size);
 
 static Variant assemble(String input) {

@@ -87,7 +87,7 @@ static Variant do_compile(const std::string &source_code, const std::string &ent
 	}
 
 	// Link the code
-	if (tcc_relocate(ctx, TCC_RELOCATE_AUTO) < 0) {
+	if (tcc_relocate(ctx) < 0) {
 		fprintf(stderr, "Failed to link code\n");
 		fflush(stdout);
 		return Nil;

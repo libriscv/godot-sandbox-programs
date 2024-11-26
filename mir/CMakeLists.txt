@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
-project(cjit)
+project(mirjit)
 
+if (NOT TARGET sandbox_api)
 add_subdirectory(../cmake cmake)
+endif()
 
-add_sandbox_program(cjit
+add_sandbox_program(mirjit
 	main.cpp
 )
 
@@ -15,5 +17,5 @@ FetchContent_Declare(libmir
 )
 FetchContent_MakeAvailable(libmir)
 
-target_link_libraries(cjit PRIVATE mir_static)
-target_include_directories(cjit PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/_deps/libmir-src")
+target_link_libraries(mirjit PRIVATE mir_static)
+target_include_directories(mirjit PRIVATE "${CMAKE_BINARY_DIR}/_deps/libmir-src")

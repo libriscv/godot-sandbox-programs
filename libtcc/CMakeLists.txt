@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(cjit)
 
+if (NOT TARGET sandbox_api)
 add_subdirectory(../cmake cmake)
+endif()
 
 add_sandbox_program(cjit
 	main.cpp
@@ -14,11 +16,14 @@ FetchContent_Declare(tinycc
 )
 FetchContent_MakeAvailable(tinycc)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/_deps/tinycc-src/config.h)
+set(CONFIG_H_LOCATION "${CMAKE_BINARY_DIR}/_deps/tinycc-src/config.h")
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CONFIG_H_LOCATION})
+set_source_files_properties(${CONFIG_H_LOCATION} PROPERTIES GENERATED TRUE)
 
 add_library(libtcc STATIC
 	${tinycc_SOURCE_DIR}/libtcc.c
 	${tinycc_SOURCE_DIR}/libtcc.h
+	${CONFIG_H_LOCATION}
 )
 target_compile_definitions(libtcc PRIVATE
 	CONFIG_TCC_PREDEFS=1
@@ -26,6 +31,9 @@ target_compile_definitions(libtcc PRIVATE
 	TARGETOS_Linux=1
 	TCC_VERSION="0.9.27"
 )
-target_include_directories(libtcc PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(libtcc PUBLIC
+	"${CMAKE_BINARY_DIR}/_deps/tinycc-src"
+	"${CMAKE_CURRENT_SOURCE_DIR}"
+)
 
 target_link_libraries(cjit PRIVATE libtcc)
