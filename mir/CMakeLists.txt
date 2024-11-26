@@ -1,11 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(mirjit)
 
-if (NOT TARGET sandbox_api)
-add_subdirectory(../cmake cmake)
-endif()
-
-add_sandbox_program(mirjit
+add_ci_program(mirjit
 	main.cpp
 )
 

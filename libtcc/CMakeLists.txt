@@ -1,14 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(cjit)
 
-if (NOT TARGET sandbox_api)
-add_subdirectory(../cmake cmake)
-endif()
-
-add_sandbox_program(cjit
-	main.cpp
-)
-
 include(FetchContent)
 FetchContent_Declare(tinycc
 	GIT_REPOSITORY https://github.com/TinyCC/tinycc.git
@@ -36,4 +28,8 @@ target_include_directories(libtcc PUBLIC
 	"${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
+
+add_ci_program(cjit
+	main.cpp
+)
 target_link_libraries(cjit PRIVATE libtcc)

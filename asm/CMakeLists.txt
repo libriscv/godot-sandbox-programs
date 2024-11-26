@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(asmjit)
 
-if (NOT TARGET sandbox_api)
-add_subdirectory(../cmake cmake)
-endif()
-
 add_subdirectory(asmjit)
 
 include(FetchContent)
@@ -18,7 +14,7 @@ FetchContent_MakeAvailable(libriscv)
 target_compile_definitions(riscv PRIVATE RISCV_DISABLE_URANDOM=1)
 
 # Add the asmjit sandbox program
-add_sandbox_program(asm
+add_ci_program(asm
 	main.cpp
 )
 

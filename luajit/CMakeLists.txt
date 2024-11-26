@@ -1,14 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(lua)
 
-if (NOT TARGET sandbox_api)
-add_subdirectory(../cmake cmake)
-endif()
-
-add_sandbox_program(lua
+add_ci_program(lua
 	main.cpp
 )
-
 target_link_libraries(lua PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/libluajit.a
 )
