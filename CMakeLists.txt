@@ -10,6 +10,7 @@ endfunction()
 
 # Build all the examples
 add_subdirectory(asm)
+add_subdirectory(hello-world)
 add_subdirectory(libtcc)
 add_subdirectory(luajit)
 add_subdirectory(mir)
