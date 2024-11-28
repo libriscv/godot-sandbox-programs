@@ -27,12 +27,11 @@ A [RISC-V assembler](/asm) is embedded into a Sandbox program. It will assemble 
 
 [Mir is embedded](/mir) into a Sandbox program. It can be used to compile and run C-code at run-time.
 
-# Robust Skin Weights Transfer via Weight Inpainting
+### Robust Skin Weights Transfer via Weight Inpainting
 
 ![Teaser](https://www.dgp.toronto.edu/~rinat/projects/RobustSkinWeightsTransfer/teaser.jpg)
-Sample code for the Siggraph Asia 2023 Technical Communications paper - [Robust Skin Weights Transfer via Weight Inpainting](https://www.dgp.toronto.edu/~rinat/projects/RobustSkinWeightsTransfer/index.html)
 
-If you use this code for an academic publication, cite it as:
+A re-implementation of [Robust Skin Weights Transfer via Weight Inpainting](https://www.dgp.toronto.edu/~rinat/projects/RobustSkinWeightsTransfer/index.html). If you use this code for an academic publication, cite it as:
 
 ```bib
 @inproceedings{abdrashitov2023robust,
