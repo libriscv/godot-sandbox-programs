@@ -2,6 +2,12 @@
 
 int main() {
 	print("Hello, world!\n");
+
+	// Create a new Godot Sandbox node.
+	Sandbox sandbox = ClassDB::instantiate("Sandbox", "my_sandbox");
+	// Delete it next frame.
+	sandbox.queue_free();
+
 	halt();
 }
 
