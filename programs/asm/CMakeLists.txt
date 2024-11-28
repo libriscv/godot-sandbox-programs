@@ -1,22 +1,25 @@
 cmake_minimum_required(VERSION 3.10)
 project(asmjit)
 
-add_subdirectory(asmjit)
+option(ZLIB_BUILD_EXAMPLES "" OFF)
 
 include(FetchContent)
 FetchContent_Declare(
-  libriscv
-  GIT_REPOSITORY https://github.com/libriscv/libriscv.git
-  GIT_TAG master
+  zlib
+  GIT_REPOSITORY https://github.com/madler/zlib.git
+  GIT_TAG develop
 )
-FetchContent_MakeAvailable(libriscv)
+FetchContent_MakeAvailable(zlib)
 
-target_compile_definitions(riscv PRIVATE RISCV_DISABLE_URANDOM=1)
+# Add the RISC-V asmjit static library
+add_library(riscv_asmjit STATIC IMPORTED)
+set_target_properties(riscv_asmjit PROPERTIES
+	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/libRiscvAsmLib.a
+)
+target_link_libraries(riscv_asmjit INTERFACE zlibstatic)
 
 # Add the asmjit sandbox program
 add_ci_program(asm
 	main.cpp
 )
-
-target_link_libraries(asm PRIVATE -static riscv)
-add_dependencies(asm assembler)
+target_link_libraries(asm PRIVATE riscv_asmjit)
