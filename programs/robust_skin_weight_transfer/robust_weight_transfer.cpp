@@ -19,8 +19,6 @@
 #include <igl/slice_mask.h>
 #include <igl/min_quad_with_fixed.h>
 
-#include "generated_api.hpp"
-
 /**
  * Given a number of points find their closest points on the surface of the V,F mesh
  * 
@@ -894,3 +892,17 @@ extern "C" Variant run_tests() {
         return Variant(1);
     }
 }
+
+SANDBOX_API({
+	.name = "robust_weight_transfer",
+	.address = (void *)robust_weight_transfer,
+	.description = "Robust Weight Transfer",
+	.return_type = "bool",
+	.arguments = "Mesh source_mesh, Mesh target_mesh, Dictionary arguments, Array matched_array, Array interpolated_weights_array, Array inpainted_weights_array, Array smoothed_weights_array",
+}, {
+	.name = "run_tests",
+	.address = (void *)run_tests,
+	.description = "Runs all tests",
+	.return_type = "int",
+	.arguments = "",
+});
