@@ -9,23 +9,23 @@ All programs are built in CI using a modern C/C++ RISC-V toolchain, with access 
 
 ### Hello World
 
-The [Hello World example](/hello-world) is a minimal project that can be used as a starting point for anyone who wants to write Sandbox programs using modern C++.
+The [Hello World example](/programs/hello-world) is a minimal project that can be used as a starting point for anyone who wants to write Sandbox programs using modern C++.
 
 ### Asm JIT example
 
-A [RISC-V assembler](/asm) is embedded into a Sandbox program. It will assemble RISC-V and return a callable.
+A [RISC-V assembler](/programs/asm) is embedded into a Sandbox program. It will assemble RISC-V and return a callable.
 
 ### LuaJit example
 
-[LuaJit is embedded](/luajit) into a Sandbox program. It can be used to run JIT-compiled Lua at run-time.
+[LuaJit is embedded](/programs/luajit) into a Sandbox program. It can be used to run JIT-compiled Lua at run-time.
 
 ### libtcc example
 
-[Libtcc is embedded](/libtcc) into a Sandbox program. It can be used to compile and run C-code at run-time.
+[Libtcc is embedded](/programs/libtcc) into a Sandbox program. It can be used to compile and run C-code at run-time.
 
 ### Mir example
 
-[Mir is embedded](/mir) into a Sandbox program. It can be used to compile and run C-code at run-time.
+[Mir is embedded](/programs/mir) into a Sandbox program. It can be used to compile and run C-code at run-time.
 
 ### Robust Skin Weights Transfer via Weight Inpainting
 
