@@ -599,29 +599,26 @@ extern "C" Variant robust_weight_transfer(Mesh source_mesh, Mesh target_mesh, Di
 		return false;
 	}
 
-	Variant vertices_1_variant = source_mesh_arrays[Mesh::ARRAY_VERTEX].get();
-	if (vertices_1_variant == Nil) {
+	PackedArray<Vector3> vertices_1_ref;
+	if (!source_mesh_arrays[Mesh::ARRAY_VERTEX].get_as_type(Variant::PACKED_VECTOR3_ARRAY, vertices_1_ref)) {
 		std::cerr << "vertices_1_variant is null" << std::endl;
 		return false;
 	}
-	PackedArray<Vector3> vertices_1_ref = vertices_1_variant;
 
-	Variant faces_1_variant = source_mesh_arrays[Mesh::ARRAY_INDEX].get();
-	if (faces_1_variant == Nil) {
+	PackedArray<int32_t> faces_1_ref;
+	if (!source_mesh_arrays[Mesh::ARRAY_INDEX].get_as_type(Variant::PACKED_INT32_ARRAY, faces_1_ref)) {
 		std::cerr << "faces_1_variant is null" << std::endl;
 		return false;
 	}
-	PackedArray<int32_t> faces_1_ref = faces_1_variant;
 
-	Variant normals_1_variant = source_mesh_arrays[Mesh::ARRAY_NORMAL].get();
-	if (normals_1_variant == Nil) {
+	PackedArray<Vector3> normals_1_ref;
+	if (!source_mesh_arrays[Mesh::ARRAY_NORMAL].get_as_type(Variant::PACKED_VECTOR3_ARRAY, normals_1_ref)) {
 		std::cerr << "normals_1_variant is null" << std::endl;
 		return false;
 	}
-	PackedArray<Vector3> normals_1_ref = normals_1_variant;
 
 	PackedArray<float> skin_weights_ref;
-	if (!source_mesh_arrays[Mesh::ARRAY_WEIGHTS].get_type(Variant::PACKED_FLOAT32_ARRAY, skin_weights_ref)) {
+	if (!source_mesh_arrays[Mesh::ARRAY_WEIGHTS].get_as_type(Variant::PACKED_FLOAT32_ARRAY, skin_weights_ref)) {
 		std::cerr << "source_mesh_arrays[Mesh::ARRAY_WEIGHTS] is null" << std::endl;
 		return false;
 	}
