@@ -41,16 +41,17 @@ jobs:
     - name: Archive
       shell: sh
       run: |
-        ls
-        mkdir -p examples
-        cp build/bin/* examples/
-        zip -r "examples.zip" examples
+        cd build/bin
+        for i in *; do
+          mv $i $i.elf;
+          zip -r "${i}.zip" $i.elf;
+        done
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
         name: Examples Nightly
         files: |
-          examples.zip
+          build/bin/*.zip
         generate_release_notes: true
         draft: true
         prerelease: true
