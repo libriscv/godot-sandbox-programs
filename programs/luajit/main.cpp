@@ -5,16 +5,116 @@ extern "C" {
 #include <luajit-2.1/lua.h>
 #include <luajit-2.1/lualib.h>
 }
-extern "C" Variant click();
 
+//#define CREATE_MENU_BOX 1
+#ifdef CREATE_MENU_BOX
 static int api_print(lua_State *L) {
 	const char *text = luaL_checkstring(L, 1);
 	get_node("../TextAnswer")("set_text", text);
 	return 0;
 }
+extern "C" Variant click() {
+	String text = get_node("../TextEdit")("get_text");
+	return run(text);
+}
+#else
+static int api_print(lua_State *L) {
+	const char *text = luaL_checkstring(L, 1);
+	printf("%s\n", text);
+	return 0;
+}
+#endif
 
-lua_State *L;
+static lua_State *L;
+
+static Variant run(String code) {
+	// Load a string as a script
+	const std::string utf = code.utf8();
+	luaL_loadbuffer(L, utf.c_str(), utf.size(), "@code");
+
+	// Run the script (0 arguments, 1 result)
+	lua_pcall(L, 0, 1, 0);
+
+	// Get the result type
+	const int type = lua_type(L, -1);
+	switch (type) {
+		case LUA_TNIL:
+			return Nil;
+		case LUA_TBOOLEAN:
+			return lua_toboolean(L, -1);
+		case LUA_TNUMBER:
+			return lua_tonumber(L, -1);
+		case LUA_TSTRING:
+			return lua_tostring(L, -1);
+		default:
+			return Nil;
+	}
+}
+
+static Variant add_function(String function_name, Callable function) {
+	// Create a struct to store callback information
+	struct UserData {
+		Variant function;
+	};
+	UserData *data = new UserData;
+	// Make sure the function is not garbage collected, store it in the struct
+	data->function = function;
+	data->function.make_permanent();
+	// Push the function to the Lua stack
+	lua_pushlightuserdata(L, (void *)data);
+	lua_pushcclosure(L, [](lua_State *L) -> int {
+		UserData *data = (UserData *)lua_touserdata(L, lua_upvalueindex(1));
+		Variant &function = data->function;
+		std::array<Variant, 8> args;
+		size_t arg_count = 0;
+		// Find the number of arguments
+		const int nargs = lua_gettop(L);
+		for (int i = 1; i <= nargs; i++) {
+			// Push the arguments to the vector
+			switch (lua_type(L, i)) {
+				case LUA_TNIL:
+					args.at(arg_count++) = Nil;
+					break;
+				case LUA_TBOOLEAN:
+					args.at(arg_count++) = lua_toboolean(L, i);
+					break;
+				case LUA_TNUMBER:
+					args.at(arg_count++) = lua_tonumber(L, i);
+					break;
+				case LUA_TSTRING:
+					args.at(arg_count++) = lua_tostring(L, i);
+					break;
+				default:
+					args.at(arg_count++) = Nil;
+					break;
+			}
+		}
+		Variant result;
+		function.callp("call", args.data(), arg_count, result);
+		// Push the result to the Lua stack
+		switch (result.get_type()) {
+			case Variant::Type::NIL:
+				return 0;
+			case Variant::Type::BOOL:
+				lua_pushboolean(L, result);
+				return 1;
+			case Variant::Type::INT:
+			case Variant::Type::FLOAT:
+				lua_pushnumber(L, result);
+				return 1;
+			case Variant::Type::STRING:
+				lua_pushstring(L, result.as_std_string().c_str());
+				return 1;
+			default:
+				return 0;
+		}
+	}, 1);
+	lua_setglobal(L, function_name.utf8().c_str());
+	return Nil;
+}
+
 int main() {
+#ifdef CREATE_MENU_BOX
 	// Activate this mod
 	get_parent().call("set_visible", true);
 	get_node("../Button").connect("pressed", Callable(click));
@@ -36,6 +136,7 @@ int main() {
 		x += 0.1f;
 		return Nil;
 	});
+#endif
 
 	L = luaL_newstate();
 
@@ -52,22 +153,8 @@ int main() {
 
 	fflush(stdout);
 
+	ADD_API_FUNCTION(run, "Variant", "String code");
+	ADD_API_FUNCTION(add_function, "void", "String function_name, Callable function");
+
 	halt();
-}
-
-extern "C" Variant run(String code) {
-	// Load a string as a script
-	const std::string utf = code.utf8();
-	luaL_loadbuffer(L, utf.c_str(), utf.size(), "@code");
-
-	// Run the script
-	lua_pcall(L, 0, 0, 0);
-
-	fflush(stdout);
-	return Nil;
-}
-
-extern "C" Variant click() {
-	String text = get_node("../TextEdit")("get_text");
-	return run(text);
 }
