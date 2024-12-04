@@ -20,12 +20,14 @@ extern "C" Variant click() {
 #else
 static int api_print(lua_State *L) {
 	const char *text = luaL_checkstring(L, 1);
-	printf("%s\n", text);
+	printf("%s", text);
+	fflush(stdout);
 	return 0;
 }
 #endif
 
 static lua_State *L;
+static constexpr bool VERBOSE = false;
 
 static Variant run(String code) {
 	// Load a string as a script
@@ -64,7 +66,12 @@ static Variant add_function(String function_name, Callable function) {
 	lua_pushlightuserdata(L, (void *)data);
 	lua_pushcclosure(L, [](lua_State *L) -> int {
 		UserData *data = (UserData *)lua_touserdata(L, lua_upvalueindex(1));
+		if constexpr (VERBOSE) {
+			printf("Calling function with Callable Variant type %d index %d\n",
+				data->function.get_type(), data->function.get_internal_index());
+		}
 		Variant &function = data->function;
+		// Create a fixed-size array to store the arguments
 		std::array<Variant, 8> args;
 		size_t arg_count = 0;
 		// Find the number of arguments
@@ -73,21 +80,34 @@ static Variant add_function(String function_name, Callable function) {
 			// Push the arguments to the vector
 			switch (lua_type(L, i)) {
 				case LUA_TNIL:
-					args.at(arg_count++) = Nil;
 					break;
 				case LUA_TBOOLEAN:
-					args.at(arg_count++) = lua_toboolean(L, i);
+					if constexpr (VERBOSE)
+						printf("Boolean argument %d\n", lua_toboolean(L, i));
+					args.at(arg_count++) = bool(lua_toboolean(L, i));
 					break;
 				case LUA_TNUMBER:
-					args.at(arg_count++) = lua_tonumber(L, i);
+					if constexpr (VERBOSE)
+						printf("Number argument %f\n", lua_tonumber(L, i));
+					args.at(arg_count++) = double(lua_tonumber(L, i));
 					break;
 				case LUA_TSTRING:
+					if constexpr (VERBOSE)
+						printf("String argument %s\n", lua_tostring(L, i));
 					args.at(arg_count++) = lua_tostring(L, i);
 					break;
 				default:
-					args.at(arg_count++) = Nil;
+					if constexpr (VERBOSE)
+						printf("Unknown argument type %d\n", lua_type(L, i));
 					break;
 			}
+		}
+		if constexpr (VERBOSE) {
+			printf("Calling function with %zu arguments\n", arg_count);
+			for (size_t i = 0; i < arg_count; i++) {
+				printf("Argument %zu type %d\n", i, args.at(i).get_type());
+			}
+			fflush(stdout);
 		}
 		Variant result;
 		function.callp("call", args.data(), arg_count, result);
@@ -144,14 +164,6 @@ int main() {
 
 	// API bindings
 	lua_register(L, "print", api_print);
-
-	// Load a string as a script
-	luaL_loadstring(L, "print('Hello, Lua!')");
-
-	// Run the script
-	lua_pcall(L, 0, 0, 0);
-
-	fflush(stdout);
 
 	ADD_API_FUNCTION(run, "Variant", "String code");
 	ADD_API_FUNCTION(add_function, "void", "String function_name, Callable function");
