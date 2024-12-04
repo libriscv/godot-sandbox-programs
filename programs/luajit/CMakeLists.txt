@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
-project(lua)
+project(luajit)
 
-add_ci_program(lua
+add_ci_program(luajit
 	main.cpp
 )
-target_link_libraries(lua PRIVATE
+target_link_libraries(luajit PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/libluajit.a
 )
-target_include_directories(lua PRIVATE
+target_include_directories(luajit PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
