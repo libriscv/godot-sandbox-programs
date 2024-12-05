@@ -75,13 +75,6 @@ static __attribute__((noreturn)) void error_func(MIR_error_type_t error_type, co
 	abort();
 }
 
-int main() {
-	ctx = MIR_init();
-	MIR_set_error_func(ctx, error_func);
-
-	halt();
-}
-
 #define VERBOSE_COMPILE 0
 
 static Variant do_compile(const std::string &source_code, const std::string &entry) {
@@ -177,9 +170,19 @@ static Variant do_compile(const std::string &source_code, const std::string &ent
 	return Callable::Create<Variant()>(fun_addr);
 }
 
-extern "C" Variant compile(String code, String entry) {
+static Variant compile(String code, String entry) {
 	const std::string utf = code.utf8();
 	const std::string entry_utf = entry.utf8();
 
 	return do_compile(utf, entry);
+}
+
+int main() {
+	ctx = MIR_init();
+	MIR_set_error_func(ctx, error_func);
+
+	// The public API
+	ADD_API_FUNCTION(compile, "Callable", "String code, String entry");
+
+	halt();
 }

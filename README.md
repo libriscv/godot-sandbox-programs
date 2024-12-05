@@ -5,6 +5,10 @@ This repository can be used as a starting point for automatically building and m
 All programs are built in CI using a modern C/C++ RISC-V toolchain, with access to the Godot Sandbox C++ API, and automatically zipped and uploaded to a Draft release. Fork this repository and build your own Sandbox programs in a maintainable way!
 
 
+## Usage
+
+If you are using Godot Sandbox, each program built by this repository can be downloaded by a Sandbox node using `Sandbox.download_program(name)`. See the READMEs of each program for how to use.
+
 ## Example programs
 
 ### Hello World

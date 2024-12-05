@@ -116,9 +116,16 @@ static Variant do_compile(const std::string &source_code, const std::string &ent
 	return Callable::Create<Variant()>(fun_addr);
 }
 
-extern "C" Variant compile(String code, String entry) {
+static Variant compile(String code, String entry) {
 	const std::string utf = code.utf8();
 	const std::string entry_utf = entry.utf8();
 
 	return do_compile(utf, entry);
+}
+
+int main() {
+	// The public API
+	ADD_API_FUNCTION(compile, "Callable", "String code, String entry");
+
+	halt();
 }
