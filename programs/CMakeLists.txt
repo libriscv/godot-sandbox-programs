@@ -23,10 +23,14 @@ function (add_ci_program name)
 	endif()
 endfunction()
 
-# Build all the examples
-add_subdirectory(asm)
+# Build the trivial examples
 add_subdirectory(hello-world)
-add_subdirectory(libtcc)
-add_subdirectory(luajit)
-add_subdirectory(mir)
-add_subdirectory(robust_skin_weight_transfer)
+
+# Build the examples that require full Linux/C++ support
+if (NOT EMBEDDED_RISCV)
+	add_subdirectory(asm)
+	add_subdirectory(libtcc)
+	add_subdirectory(luajit)
+	add_subdirectory(mir)
+	add_subdirectory(robust_skin_weight_transfer)
+endif()

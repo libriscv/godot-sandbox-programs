@@ -18,7 +18,7 @@ static Variant fibonacci(int n) {
 
 static int meaning_of_life = 42;
 int main() {
-	print("Hello, world!\n");
+	print("Hello, world!");
 
 	// Add public API
 	ADD_API_FUNCTION(hello_world, "String", "", "Returns the string 'Hello, world!'");
