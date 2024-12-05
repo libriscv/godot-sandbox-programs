@@ -31,7 +31,7 @@ jobs:
     - name: Build all examples
       working-directory: ${{github.workspace}}
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSTRIPPED=ON
         cmake --build build --parallel 8
 
     - name: Delete draft release(s)
