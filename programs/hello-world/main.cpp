@@ -1,16 +1,5 @@
 #include <api.hpp>
 
-int main() {
-	print("Hello, world!\n");
-
-	// Create a new Godot Sandbox node.
-	Sandbox sandbox = ClassDB::instantiate("Sandbox", "my_sandbox");
-	// Delete it next frame.
-	sandbox.queue_free();
-
-	halt();
-}
-
 static Variant hello_world() {
 	return "Hello, world!";
 }
@@ -27,16 +16,18 @@ static Variant fibonacci(int n) {
 	return fib(n, 0, 1);
 }
 
-SANDBOX_API({
-	.name = "hello_world",
-	.address = (void *)hello_world,
-	.description = "Returns the string 'Hello, world!'",
-	.return_type = "String",
-	.arguments = "",
-}, {
-	.name = "fibonacci",
-	.address = (void *)fibonacci,
-	.description = "Calculates the nth Fibonacci number",
-	.return_type = "long",
-	.arguments = "int n",
-});
+static int meaning_of_life = 42;
+int main() {
+	print("Hello, world!\n");
+
+	// Add public API
+	ADD_API_FUNCTION(hello_world, "String", "", "Returns the string 'Hello, world!'");
+	ADD_API_FUNCTION(fibonacci, "long", "int n", "Calculates the nth Fibonacci number");
+
+	// Add a property
+	add_property("meaning_of_life", Variant::Type::INT, 42,
+		[]() -> Variant { return meaning_of_life; },
+		[](Variant value) -> Variant { meaning_of_life = value; print("Set to: ", meaning_of_life); return Nil; });
+
+	halt();
+}

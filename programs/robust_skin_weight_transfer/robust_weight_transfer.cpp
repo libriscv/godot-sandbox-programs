@@ -899,16 +899,10 @@ extern "C" Variant run_tests() {
 	}
 }
 
-SANDBOX_API({
-	.name = "robust_weight_transfer",
-	.address = (void *)robust_weight_transfer,
-	.description = "Robust Weight Transfer",
-	.return_type = "bool",
-	.arguments = "Mesh source_mesh, Mesh target_mesh, Dictionary arguments, Array matched_array, Array interpolated_weights_array, Array inpainted_weights_array, Array smoothed_weights_array",
-}, {
-	.name = "run_tests",
-	.address = (void *)run_tests,
-	.description = "Runs all tests",
-	.return_type = "int",
-	.arguments = "",
-});
+int main() {
+	// Add a public API
+	ADD_API_FUNCTION(robust_weight_transfer, "bool", "Mesh source_mesh, Mesh target_mesh, Dictionary arguments, Array matched_array, Array interpolated_weights_array, Array inpainted_weights_array, Array smoothed_weights_array", "Robust Weight Transfer");
+	ADD_API_FUNCTION(run_tests, "int", "", "Runs all tests");
+
+	halt();
+}

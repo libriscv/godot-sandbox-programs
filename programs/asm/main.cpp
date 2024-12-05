@@ -26,10 +26,9 @@ static Variant assemble(String input) {
 	return Callable::Create<Variant()>(callback);
 }
 
-SANDBOX_API({
-	.name = "assemble",
-	.address = (void*)&assemble,
-	.description = "Assemble RISC-V assembly code and return a callable function",
-	.return_type = "Callable",
-	.arguments = "String assembly_code",
-});
+int main() {
+	// Add public API
+	ADD_API_FUNCTION(assemble, "Callable", "String assembly_code", "Assemble RISC-V assembly code and return a callable function");
+
+	halt();
+}
