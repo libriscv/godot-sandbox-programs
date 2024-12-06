@@ -10,3 +10,6 @@
 [submodule "ext/geometry-central"]
 	path = ext/geometry-central
 	url = https://github.com/nmwsharp/geometry-central.git
+[submodule "ext/LuaJIT"]
+	path = ext/LuaJIT
+	url = https://github.com/plctlab/LuaJIT.git

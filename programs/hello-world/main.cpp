@@ -3,6 +3,11 @@
 static Variant hello_world() {
 	return "Hello, world!";
 }
+static Variant print_string(String str) {
+	printf("String: %s\n", str.utf8().c_str());
+	fflush(stdout);
+	return Nil;
+}
 
 static long fib(long n, long acc, long prev)
 {
@@ -22,6 +27,7 @@ int main() {
 
 	// Add public API
 	ADD_API_FUNCTION(hello_world, "String", "", "Returns the string 'Hello, world!'");
+	ADD_API_FUNCTION(print_string, "void", "String str", "Prints a string to the console");
 	ADD_API_FUNCTION(fibonacci, "long", "int n", "Calculates the nth Fibonacci number");
 
 	// Add a property

@@ -1,9 +1,9 @@
 #include <api.hpp>
 #include <cstring>
 extern "C" {
-#include <luajit-2.1/lauxlib.h>
-#include <luajit-2.1/lua.h>
-#include <luajit-2.1/lualib.h>
+#include <lauxlib.h>
+#include <lua.h>
+#include <lualib.h>
 }
 
 //#define CREATE_MENU_BOX 1

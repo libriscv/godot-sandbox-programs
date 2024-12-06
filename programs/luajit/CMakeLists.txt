@@ -9,4 +9,5 @@ target_link_libraries(luajit PRIVATE
 )
 target_include_directories(luajit PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_SOURCE_DIR}/ext/LuaJIT/src
 )
