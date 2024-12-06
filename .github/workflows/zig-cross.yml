@@ -1,0 +1,39 @@
+name: Zig C++ toolchain Examples
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    permissions:
+      contents: write
+      actions: write
+    runs-on: ubuntu-24.04
+    env:
+      CC: zig cc -target riscv64-linux-musl
+      CXX: zig c++ -target riscv64-linux-musl
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y git cmake zip wget xz-utils
+        git submodule update --init --recursive --depth=1
+        # Install Zig
+        wget https://ziglang.org/builds/zig-linux-x86_64-0.14.0-dev.2384+cbc05e0b1.tar.xz
+        tar -xf zig-linux-x86_64-0.14.0-dev.2384+cbc05e0b1.tar.xz
+
+    - name: Build all examples
+      working-directory: ${{github.workspace}}
+      run: |
+        export PATH=$PWD/zig-linux-x86_64-0.14.0-dev.2384+cbc05e0b1:$PATH
+        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSTRIPPED=ON -DCMAKE_TOOLCHAIN_FILE="cmake/zig-toolchain.cmake"
+        cmake --build build --parallel 8
