@@ -28,10 +28,7 @@ add_subdirectory(hello-world)
 
 # Build the examples that require full Linux/C++ support
 if (NOT EMBEDDED_RISCV)
-	if (NOT ZIG_COMPILER)
-		# TODO: Build programs entirely from source
-		add_subdirectory(asm)
-	endif()
+	add_subdirectory(asm)
 	add_subdirectory(libtcc)
 	add_subdirectory(luajit)
 	add_subdirectory(mir)

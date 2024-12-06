@@ -13,9 +13,13 @@ FetchContent_MakeAvailable(zlib)
 
 # Add the RISC-V asmjit static library
 add_library(riscv_asmjit STATIC IMPORTED)
-set_target_properties(riscv_asmjit PROPERTIES
-	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/libRiscvAsmLib.a
-)
+if (ZIG_COMPILER)
+	set_target_properties(riscv_asmjit PROPERTIES
+		IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/zig-libRiscvAsmLib.a)
+else()
+	set_target_properties(riscv_asmjit PROPERTIES
+		IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/libRiscvAsmLib.a)
+endif()
 target_link_libraries(riscv_asmjit INTERFACE zlibstatic)
 
 # Add the asmjit sandbox program
@@ -23,3 +27,7 @@ add_ci_program(asm
 	main.cpp
 )
 target_link_libraries(asm PRIVATE riscv_asmjit)
+
+if (ZIG_COMPILER)
+	target_sources(asm PRIVATE extra/obstack.c)
+endif()
