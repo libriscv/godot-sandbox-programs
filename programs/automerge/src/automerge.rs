@@ -30,8 +30,8 @@ enum Variant {
     // Add other types as needed
 }
 
-type Contact = HashMap<String, Variant>;
-type Address = HashMap<String, Variant>;
+type Contact = Variant;
+type Address = Variant;
 
 fn main() {
     let mut contact = Contact {
