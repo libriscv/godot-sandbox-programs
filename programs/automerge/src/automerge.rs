@@ -29,9 +29,6 @@ enum Variant {
     Array(Vec<Variant>),
 }
 
-type Contact = Variant;
-type Address = Variant;
-
 fn main() {
     let mut contact = {
         let mut contact = HashMap::new();
@@ -47,7 +44,7 @@ fn main() {
     reconcile(&mut doc, &contact).unwrap();
 
     // Get data out of a document
-    let contact2: Contact = hydrate(&doc).unwrap();
+    let contact2: Variant = hydrate(&doc).unwrap();
     assert_eq!(contact, contact2);
 
     // Fork and make changes
@@ -59,7 +56,7 @@ fn main() {
     // Now merge the documents
     let merged = Variant::merge_variants(&contact, &contact2);
 
-    assert_eq!(merged, Contact::Dictionary(HashMap::from([
+    assert_eq!(merged, Variant::Dictionary(HashMap::from([
         ("name".to_string(), Variant::String("Dangermouse".to_string())), // This was updated in the first doc
         ("address".to_string(), Variant::String("221C Baker St".to_string())), // This was concurrently updated in doc2
         ("city".to_string(), Variant::String("London".to_string())),
@@ -75,7 +72,7 @@ fn main() {
         Variant::Dictionary(contact)
     };
 
-    let contact2 = Contact::Dictionary(HashMap::from([
+    let contact2 = Variant::Dictionary(HashMap::from([
         ("name".to_string(), Variant::String("Dangermouse".to_string())),
         ("address".to_string(), Variant::String("221C Baker St".to_string())),
         ("city".to_string(), Variant::String("London".to_string())),
@@ -85,7 +82,7 @@ fn main() {
     let merged_contact = automerge(vec![contact1, contact2]);
     println!("{:?}", merged_contact);
 
-    let variant = Variant::new_variant();
+    let variant = Variant::Nil;
 
     let mut doc = AutoCommit::new();
     reconcile(&mut doc, &variant).unwrap();
@@ -94,7 +91,7 @@ fn main() {
     println!("{:?}", hydrated_variant);
 }
 
-fn automerge(variants: Vec<Contact>) -> Contact {
+fn automerge(variants: Vec<Variant>) -> Variant {
     let mut docs: Vec<AutoCommit> = variants.iter().map(|contact| {
         let mut doc = AutoCommit::new();
         reconcile(&mut doc, contact).unwrap();
@@ -194,9 +191,5 @@ impl Variant {
         reconcile(&mut doc2, variant2).unwrap();
         doc1.merge(&mut doc2).unwrap();
         hydrate(&doc1).unwrap()
-    }
-
-    fn new_variant() -> Self {
-        Variant::Vector2(1.0, 2.0)
     }
 }
