@@ -52,7 +52,7 @@ fn main() {
 	let contact2 = Variant::fork_and_update_variant(&mut contact, "Dangermouse");
 
 	// Concurrently on doc1
-	let contact = Variant::update_variant_address(&mut contact, "221C Baker St");
+	let contact = Variant::update_variant(&mut contact, "address", Variant::String("221C Baker St".to_string()));
 
 	// Now merge the documents
 	let merged = Variant::merge_variants(&contact, &contact2);
@@ -174,11 +174,11 @@ impl Variant {
 		hydrate(&doc2).unwrap()
 	}
 
-	fn update_variant_address(variant: &mut Self, new_address: &str) -> Self {
+	fn update_variant(variant: &mut Self, key: &str, new_value: Variant) -> Self {
 		let mut doc = AutoCommit::new();
 		reconcile(&mut doc, variant).unwrap();
 		if let Variant::Dictionary(ref mut map) = variant {
-			map.insert("address".to_string(), Variant::String(new_address.to_string()));
+			map.insert(key.to_string(), new_value);
 		}
 		reconcile(&mut doc, variant).unwrap();
 		hydrate(&doc).unwrap()
