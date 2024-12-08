@@ -3,12 +3,10 @@
 #include <vector>
 #include <iostream>
 #include <set>
+#include <tuple>
 
 #include <api.hpp>
 #include <Eigen/Dense>
-
-#include <vector>
-#include <tuple>
 
 #include <igl/point_mesh_squared_distance.h>
 #include <igl/barycentric_coordinates.h>
