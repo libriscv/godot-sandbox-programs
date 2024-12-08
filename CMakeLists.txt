@@ -11,7 +11,3 @@ endif()
 
 add_subdirectory(ext)
 add_subdirectory(programs)
-
-if (ZIG_COMPILER)
-	add_library(atomic STATIC "${CMAKE_SOURCE_DIR}/ext/atomic.c")
-endif()
