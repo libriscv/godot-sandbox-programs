@@ -5,4 +5,6 @@ set(CMAKE_CROSSCOMPILING TRUE)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 set(CMAKE_C_COMPILER "zig" cc -target riscv64-linux-musl)
 set(CMAKE_CXX_COMPILER "zig" c++ -target riscv64-linux-musl)
+
+link_directories("${CMAKE_BINARY_DIR}")
 set(ZIG_COMPILER 1)

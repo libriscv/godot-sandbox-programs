@@ -10,6 +10,8 @@ if (${CMAKE_C_COMPILER} MATCHES "riscv64-unknown-elf*")
 elseif (${CMAKE_C_COMPILER} MATCHES "zig")
 	set(ZIG_COMPILER 1)
 	message(STATUS "Building using zig c++")
+	add_library(atomic STATIC "${CMAKE_SOURCE_DIR}/ext/atomic.c")
+	link_directories("${CMAKE_BINARY_DIR}")
 endif()
 
 add_subdirectory(ext)

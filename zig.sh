@@ -1,3 +1,4 @@
+#TOOLCHAIN=$PWD/cmake/zig-toolchain.cmake
 export CC="zig;cc;-target riscv64-linux-musl"
 export CXX="zig;c++;-target riscv64-linux-musl"
 
