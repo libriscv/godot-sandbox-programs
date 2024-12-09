@@ -1,4 +1,4 @@
-name: Godot Sandbox Examples
+name: GNU RISC-V toolchain Examples
 
 on:
   push:
@@ -33,26 +33,3 @@ jobs:
       run: |
         cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSTRIPPED=ON
         cmake --build build --parallel 8
-
-    - name: Delete draft release(s)
-      uses: hugo19941994/delete-draft-releases@v1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Archive
-      shell: sh
-      run: |
-        cd build/bin
-        for i in *; do
-          mv $i $i.elf;
-          zip -r "${i}.zip" $i.elf;
-        done
-    - name: Release
-      uses: softprops/action-gh-release@v2
-      with:
-        name: Examples Nightly
-        files: |
-          build/bin/*.zip
-        generate_release_notes: true
-        draft: true
-        prerelease: true
-        fail_on_unmatched_files: true
