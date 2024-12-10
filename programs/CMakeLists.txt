@@ -1,5 +1,13 @@
-# Add the sandbox program CMake API
-add_subdirectory(../ext/godot-sandbox/program/cpp/cmake cmake)
+# Fetch godot-sandbox repository (add_subdirectory is implicitly called)
+include(FetchContent)
+FetchContent_Declare(
+	godot-sandbox
+	GIT_REPOSITORY https://github.com/libriscv/godot-sandbox.git
+	GIT_TAG        main
+	GIT_PROGRESS   TRUE
+	SOURCE_SUBDIR  "program/cpp/cmake"
+)
+FetchContent_MakeAvailable(godot-sandbox)
 
 # Download the run-time generated API from the v0.1 release
 file(DOWNLOAD
