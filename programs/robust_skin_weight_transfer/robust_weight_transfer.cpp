@@ -429,7 +429,7 @@ bool test_inpaint() {
 							0.0357143 , 0.964286;
 
 	Eigen::MatrixXd W_inpainted(4, 2);
-	
+
 	bool success = inpaint(V2, F2, W2, Matched, W_inpainted);
 	std::cout << "Inpainted Weights:\n" << W_inpainted << std::endl;
 	std::cout << "Expected Inpainted Weights:\n" << expected_W_inpainted << std::endl;
@@ -890,10 +890,10 @@ static Variant run_tests() {
 	}
 	if (all_tests_passed) {
 		std::cout << "All tests passed!" << std::endl;
-		return Variant(0);
+		return 0;
 	} else {
 		std::cerr << "Some tests failed." << std::endl;
-		return Variant(1);
+		return 1;
 	}
 }
 
