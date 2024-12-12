@@ -1,9 +1,9 @@
-#TOOLCHAIN=$PWD/cmake/zig-toolchain.cmake
+TOOLCHAIN=$PWD/cmake/zig-toolchain.cmake
 export CC="zig;cc;-target riscv64-linux-musl"
 export CXX="zig;c++;-target riscv64-linux-musl"
 
 mkdir -p .zig
 pushd .zig
-cmake .. -DCMAKE_BUILD_TYPE=Release -DSTRIPPED=ON -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX"
+cmake .. -DCMAKE_BUILD_TYPE=Release -DSTRIPPED=ON -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX" -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN
 make -j8
 popd
