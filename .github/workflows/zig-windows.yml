@@ -1,0 +1,36 @@
+name: Zig C++ Windows AMD64
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      CC: zig cc -target riscv64-linux-musl
+      CXX: zig c++ -target riscv64-linux-musl
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        choco install ninja
+        git submodule update --init --recursive --depth=1
+        # Install Zig
+        curl -L https://ziglang.org/builds/zig-windows-x86_64-0.14.0-dev.2441+3670910f2.zip -o zig.zip
+        7z.exe x -y zig.zip
+      shell: bash
+
+    - name: Build all examples
+      working-directory: ${{github.workspace}}
+      run: |
+        export PATH=$PWD/zig-windows-x86_64-0.14.0-dev.2441+3670910f2:$PATH
+        cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSTRIPPED=ON -DCMAKE_TOOLCHAIN_FILE=cmake/zig-toolchain.cmake
+        cmake --build build --parallel 8
+      shell: bash
