@@ -1,4 +1,4 @@
-name: Zig C++ toolchain Examples
+name: Zig C++ Linux AMD64
 
 on:
   push:
