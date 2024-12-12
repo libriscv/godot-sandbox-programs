@@ -11,6 +11,7 @@ FetchContent_MakeAvailable(tinycc)
 set(CONFIG_H_LOCATION "${CMAKE_BINARY_DIR}/_deps/tinycc-src/config.h")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CONFIG_H_LOCATION})
 set_source_files_properties(${CONFIG_H_LOCATION} PROPERTIES GENERATED TRUE)
+file(COPY "${CMAKE_BINARY_DIR}/_deps/tinycc-src/libtcc.h" DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_library(libtcc STATIC
 	${tinycc_SOURCE_DIR}/libtcc.c
@@ -24,7 +25,6 @@ target_compile_definitions(libtcc PRIVATE
 	TCC_VERSION="0.9.27"
 )
 target_include_directories(libtcc PUBLIC
-	"${CMAKE_BINARY_DIR}/_deps/tinycc-src"
 	"${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
