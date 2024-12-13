@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.10)
 project(mirjit)
 
 set(LLVM_FOUND FALSE CACHE BOOL "" FORCE)
+option(MIR_BUILD_TESTS "" OFF)
+option(MIR_BUILD_UTILS "" OFF)
 
 # Fetch the MIR library
 include(FetchContent)
 FetchContent_Declare(libmir
-	GIT_REPOSITORY https://github.com/vnmakarov/mir
+	GIT_REPOSITORY https://github.com/fwsGonzo/mir
 	GIT_TAG        master
 )
 FetchContent_MakeAvailable(libmir)
