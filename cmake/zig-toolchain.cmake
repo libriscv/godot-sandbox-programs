@@ -10,4 +10,7 @@ if (CMAKE_HOST_WIN32)
 	# Windows: Disable .d files
 	set(CMAKE_C_LINKER_DEPFILE_SUPPORTED FALSE)
 	set(CMAKE_CXX_LINKER_DEPFILE_SUPPORTED FALSE)
+	# Windows: Work-around for zig ar and zig ranlib
+	set(CMAKE_AR "${CMAKE_CURRENT_LIST_DIR}/zig-ar.cmd")
+	set(CMAKE_RANLIB "${CMAKE_CURRENT_LIST_DIR}/zig-ranlib.cmd")
 endif()
