@@ -5,3 +5,9 @@ set(CMAKE_CROSSCOMPILING TRUE)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 set(CMAKE_C_COMPILER "zig" cc -target riscv64-linux-musl)
 set(CMAKE_CXX_COMPILER "zig" c++ -target riscv64-linux-musl)
+
+if (CMAKE_HOST_WIN32)
+	# Windows: Disable .d files
+	set(CMAKE_C_LINKER_DEPFILE_SUPPORTED FALSE)
+	set(CMAKE_CXX_LINKER_DEPFILE_SUPPORTED FALSE)
+endif()
