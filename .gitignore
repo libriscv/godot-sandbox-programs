@@ -5,3 +5,5 @@
 *.a
 *.so
 .vscode/
+build/
+.DS_Store
