@@ -1,6 +1,6 @@
 # Godot Sandbox Programs
 
-This repository can be used as a starting point for automatically building and maintaining Sandbox programs with CMake.
+This repository can be used as a starting point for automatically building and maintaining Sandbox programs with CMake. These programs are for use with the [Godot Sandbox](https://github.com/libriscv/godot-sandbox).
 
 All programs are built in CI using a modern C/C++ RISC-V toolchain, with access to the Godot Sandbox C++ API, and automatically zipped and uploaded to a Draft release. Fork this repository and build your own Sandbox programs in a maintainable way!
 
