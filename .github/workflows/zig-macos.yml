@@ -23,12 +23,12 @@ jobs:
         brew install cmake git wget xz
         git submodule update --init --recursive --depth=1
         # Install Zig
-        wget https://ziglang.org/builds/zig-macos-aarch64-0.14.0-dev.2441+3670910f2.tar.xz
-        tar -xf zig-macos-aarch64-0.14.0-dev.2441+3670910f2.tar.xz
+        wget https://ziglang.org/download/0.14.1/zig-aarch64-macos-0.14.1.tar.xz
+        tar -xf zig-aarch64-macos-0.14.1.tar.xz
 
     - name: Build all examples
       working-directory: ${{github.workspace}}
       run: |
-        export PATH=$PWD/zig-macos-aarch64-0.14.0-dev.2441+3670910f2:$PATH
+        export PATH=$PWD/zig-aarch64-macos-0.14.1:$PATH
         cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSTRIPPED=ON -DCMAKE_TOOLCHAIN_FILE=cmake/zig-toolchain.cmake
         cmake --build build --parallel 8

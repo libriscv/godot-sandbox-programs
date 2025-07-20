@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(asmjit)
 
+option(ZLIB_BUILD_SHARED   "" OFF)
 option(ZLIB_BUILD_EXAMPLES "" OFF)
-
+option(ZLIB_BUILD_TESTING  "" OFF)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -11,9 +12,6 @@ FetchContent_Declare(
   GIT_TAG develop
 )
 FetchContent_MakeAvailable(zlib)
-
-# Disable shared zlib from ALL
-set_target_properties(zlib PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
 # Add the RISC-V asmjit static library
 add_library(riscv_asmjit STATIC IMPORTED)
