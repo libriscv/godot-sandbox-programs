@@ -5,6 +5,8 @@ set(CMAKE_CROSSCOMPILING TRUE)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 set(CMAKE_C_COMPILER "zig" cc -target riscv64-linux-musl)
 set(CMAKE_CXX_COMPILER "zig" c++ -target riscv64-linux-musl)
+set(CMAKE_C_FLAGS_INIT "-ffreestanding")
+set(CMAKE_CXX_FLAGS_INIT "-ffreestanding")
 
 # Prevent linking zig's libc to avoid duplicates with sandbox API, but link libcxx for C++ features
 set(CMAKE_EXE_LINKER_FLAGS "-nodefaultlibs -lc++")
