@@ -10,7 +10,7 @@ EXTERN_SYSCALL(void, sys_vfetch, unsigned, void *, int);
 
 // Workaround for a bug in Newlib, Mir or C2Mir
 char *getenv(const char *name) {
-	return "";
+	return (char*)"";
 }
 
 struct Data {
