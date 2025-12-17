@@ -85,10 +85,12 @@ else()
     set(STABLEHLO_INSTALL_PREFIX ${EXTERNAL_PROJECTS_DIR}/stablehlo-install)
     
     # Build LLVM with MLIR enabled
+    # Use the LLVM commit hash from stablehlo project for better compatibility
+    # This is the commit that stablehlo v1.0.0 was tested with
     ExternalProject_Add(
         llvm-project
         GIT_REPOSITORY https://github.com/llvm/llvm-project.git
-        GIT_TAG llvmorg-18.1.0
+        GIT_TAG 0c2701fe7fa002e1befc5f86c268a7964f96d286
         GIT_SHALLOW TRUE
         SOURCE_DIR ${EXTERNAL_PROJECTS_DIR}/llvm-project-src
         BINARY_DIR ${EXTERNAL_PROJECTS_DIR}/llvm-project-build
@@ -116,6 +118,8 @@ else()
             -DLLVM_ENABLE_ZSTD=OFF
             -DMLIR_ENABLE_BINDINGS_PYTHON=OFF
             -DMLIR_INCLUDE_TESTS=OFF
+            -DLLVM_VERSION_SUFFIX=""
+            -DCMAKE_PLATFORM_NO_VERSIONED_SONAME:BOOL=ON
             -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
             -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
         BUILD_COMMAND ${CMAKE_COMMAND} --build . --parallel ${CMAKE_BUILD_PARALLEL_LEVEL}
@@ -171,19 +175,31 @@ add_ci_program(stablehlo_to_riscv
     mlir_compiler.cpp
 )
 
-# Remove RISC-V specific flags that clang++ doesn't support on macOS
-# These flags are added by add_sandbox_program but we're building for host, not RISC-V
-# We need to filter them out from compile options
-get_target_property(OLD_COMPILE_OPTIONS stablehlo_to_riscv COMPILE_OPTIONS)
-if(OLD_COMPILE_OPTIONS)
-    set(NEW_COMPILE_OPTIONS "")
-    foreach(OPT ${OLD_COMPILE_OPTIONS})
-        if(NOT OPT MATCHES "^-march=.*" AND NOT OPT MATCHES "^-mabi=.*")
-            list(APPEND NEW_COMPILE_OPTIONS ${OPT})
+# Remove RISC-V flags for host builds (clang++ doesn't support RISC-V arch flags on macOS)
+# These flags are added by godot-sandbox but we're building for host, not cross-compiling
+# Function to remove RISC-V flags from a target
+function(remove_riscv_flags target_name)
+    if(TARGET ${target_name})
+        get_target_property(OPTS ${target_name} COMPILE_OPTIONS)
+        if(OPTS)
+            list(FILTER OPTS EXCLUDE REGEX "^-march=.*")
+            list(FILTER OPTS EXCLUDE REGEX "^-mabi=.*")
+            set_target_properties(${target_name} PROPERTIES COMPILE_OPTIONS "${OPTS}")
         endif()
-    endforeach()
-    set_target_properties(stablehlo_to_riscv PROPERTIES COMPILE_OPTIONS "${NEW_COMPILE_OPTIONS}")
+    endif()
+endfunction()
+
+# Remove flags from sandbox_api (needed for stablehlo-to-riscv to link properly)
+if(TARGET sandbox_api)
+    remove_riscv_flags(sandbox_api)
 endif()
+
+# Remove flags from stablehlo_to_riscv target
+remove_riscv_flags(stablehlo_to_riscv)
+
+# Also override the variables to prevent them from being used in future targets
+set(RISCV_ARCH "" CACHE STRING "" FORCE)
+set(RISCV_ABI "" CACHE STRING "" FORCE)
 
 # Link directories
 if(USE_HOMEBREW_LLVM)
