@@ -9,7 +9,31 @@ FetchContent_Declare(
 	GIT_SUBMODULES ""
 	SOURCE_SUBDIR  "program/cpp/cmake"
 )
+
 FetchContent_MakeAvailable(godot-sandbox)
+
+# Remove RISC-V flags for macOS builds (clang++ doesn't support RISC-V arch flags)
+# These are added by godot-sandbox but we're building for host, not cross-compiling
+if(APPLE)
+	# Function to remove RISC-V flags from a target
+	function(remove_riscv_flags target_name)
+		if(TARGET ${target_name})
+			get_target_property(OPTS ${target_name} COMPILE_OPTIONS)
+			if(OPTS)
+				list(FILTER OPTS EXCLUDE REGEX "^-march=.*")
+				list(FILTER OPTS EXCLUDE REGEX "^-mabi=.*")
+				set_target_properties(${target_name} PROPERTIES COMPILE_OPTIONS "${OPTS}")
+			endif()
+		endif()
+	endfunction()
+	
+	# Remove flags from sandbox_api and any other targets
+	remove_riscv_flags(sandbox_api)
+	
+	# Also override the variables to prevent them from being used in future targets
+	set(RISCV_ARCH "" CACHE STRING "" FORCE)
+	set(RISCV_ABI "" CACHE STRING "" FORCE)
+endif()
 
 function (add_ci_program name)
 	add_sandbox_program(${name} ${ARGN})

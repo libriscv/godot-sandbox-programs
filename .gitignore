@@ -5,3 +5,5 @@
 *.a
 *.so
 .vscode/
+programs/stablehlo-to-riscv/CMakeLists.txt
+build/
