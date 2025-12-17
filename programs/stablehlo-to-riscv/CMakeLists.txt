@@ -93,6 +93,7 @@ else()
         GIT_TAG 0c2701fe7fa002e1befc5f86c268a7964f96d286
         GIT_SHALLOW TRUE
         SOURCE_DIR ${EXTERNAL_PROJECTS_DIR}/llvm-project-src
+        SOURCE_SUBDIR llvm
         BINARY_DIR ${EXTERNAL_PROJECTS_DIR}/llvm-project-build
         INSTALL_DIR ${LLVM_INSTALL_PREFIX}
         CMAKE_ARGS
