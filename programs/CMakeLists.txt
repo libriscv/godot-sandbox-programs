@@ -12,52 +12,52 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(godot-sandbox)
 
-# Patch native.cpp to make string functions weak to allow duplicates in cross-compilation
-file(READ "${CMAKE_BINARY_DIR}/_deps/godot-sandbox-src/program/cpp/docker/api/native.cpp" native_content)
-# Add .weak to CREATE_SYSCALL and CREATE_SYSCALL_STRCMP
-string(REPLACE "#define CREATE_SYSCALL(name, syscall_id)                 \
-	__asm__(\".pushsection .text\\n\"                  \
-			\".global \" #name \"\\n\"            \
-			\".type \" #name \", @function\\n\"   \
-			\"\" #name \":\\n\"                   \
-			\"	li a7, \" STR(syscall_id) \"\\n\"       \
-			\"	ecall\\n\" \
-			\"	ret\\n\"   \
-			\".popsection .text\\n\")"
-			 "#define CREATE_SYSCALL(name, syscall_id)                 \
-	__asm__(\".pushsection .text\\n\"                  \
-			\".weak \" #name \"\\n\"              \
-			\".global \" #name \"\\n\"            \
-			\".type \" #name \", @function\\n\"   \
-			\"\" #name \":\\n\"                   \
-			\"	li a7, \" STR(syscall_id) \"\\n\"       \
-			\"	ecall\\n\" \
-			\"	ret\\n\"   \
-			\".popsection .text\\n\")"
-			 native_content ${native_content})
-string(REPLACE "#define CREATE_SYSCALL_STRCMP(name, syscall_id) \
-	__asm__(\".pushsection .text\\n\"              \
-			\".global \" #name \"\\n\"            \
-			\".type \" #name \", @function\\n\"   \
-			\"\" #name \":\\n\"                   \
-			\"   li a2, 4096\\n\"               \
-			\"	li a7, \" STR(syscall_id) \"\\n\"       \
-			\"	ecall\\n\" \
-			\"	ret\\n\"   \
-			\".popsection .text\\n\")"
-			 "#define CREATE_SYSCALL_STRCMP(name, syscall_id) \
-	__asm__(\".pushsection .text\\n\"              \
-			\".weak \" #name \"\\n\"              \
-			\".global \" #name \"\\n\"            \
-			\".type \" #name \", @function\\n\"   \
-			\"\" #name \":\\n\"                   \
-			\"   li a2, 4096\\n\"               \
-			\"	li a7, \" STR(syscall_id) \"\\n\"       \
-			\"	ecall\\n\" \
-			\"	ret\\n\"   \
-			\".popsection .text\\n\")"
-			 native_content ${native_content})
-file(WRITE "${CMAKE_BINARY_DIR}/_deps/godot-sandbox-src/program/cpp/docker/api/native.cpp" ${native_content})
+# Patch native.cpp to make string functions weak to allow duplicates in cross-compilation (no longer needed with -ffreestanding)
+# file(READ "${CMAKE_BINARY_DIR}/_deps/godot-sandbox-src/program/cpp/docker/api/native.cpp" native_content)
+# # Add .weak to CREATE_SYSCALL and CREATE_SYSCALL_STRCMP
+# string(REPLACE "#define CREATE_SYSCALL(name, syscall_id)                 \
+# 	__asm__(\".pushsection .text\\n\"                  \
+# 			\".global \" #name \"\\n\"            \
+# 			\".type \" #name \", @function\\n\"   \
+# 			\"\" #name \":\\n\"                   \
+# 			\"	li a7, \" STR(syscall_id) \"\\n\"       \
+# 			\"	ecall\\n\" \
+# 			\"	ret\\n\"   \
+# 			\".popsection .text\\n\")"
+# 			 "#define CREATE_SYSCALL(name, syscall_id)                 \
+# 	__asm__(\".pushsection .text\\n\"                  \
+# 			\".weak \" #name \"\\n\"              \
+# 			\".global \" #name \"\\n\"            \
+# 			\".type \" #name \", @function\\n\"   \
+# 			\"\" #name \":\\n\"                   \
+# 			\"	li a7, \" STR(syscall_id) \"\\n\"       \
+# 			\"	ecall\\n\" \
+# 			\"	ret\\n\"   \
+# 			\".popsection .text\\n\")"
+# 			 native_content ${native_content})
+# string(REPLACE "#define CREATE_SYSCALL_STRCMP(name, syscall_id) \
+# 	__asm__(\".pushsection .text\\n\"              \
+# 			\".global \" #name \"\\n\"            \
+# 			\".type \" #name \", @function\\n\"   \
+# 			\"\" #name \":\\n\"                   \
+# 			\"   li a2, 4096\\n\"               \
+# 			\"	li a7, \" STR(syscall_id) \"\\n\"       \
+# 			\"	ecall\\n\" \
+# 			\"	ret\\n\"   \
+# 			\".popsection .text\\n\")"
+# 			 "#define CREATE_SYSCALL_STRCMP(name, syscall_id) \
+# 	__asm__(\".pushsection .text\\n\"              \
+# 			\".weak \" #name \"\\n\"              \
+# 			\".global \" #name \"\\n\"            \
+# 			\".type \" #name \", @function\\n\"   \
+# 			\"\" #name \":\\n\"                   \
+# 			\"   li a2, 4096\\n\"               \
+# 			\"	li a7, \" STR(syscall_id) \"\\n\"       \
+# 			\"	ecall\\n\" \
+# 			\"	ret\\n\"   \
+# 			\".popsection .text\\n\")"
+# 			 native_content ${native_content})
+# file(WRITE "${CMAKE_BINARY_DIR}/_deps/godot-sandbox-src/program/cpp/docker/api/native.cpp" ${native_content})
 
 function (add_ci_program name)
 	add_sandbox_program(${name} ${ARGN})
