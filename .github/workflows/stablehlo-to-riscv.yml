@@ -1,0 +1,90 @@
+name: StableHLO to RISC-V Guest Build
+
+on:
+  push:
+    branches: [ main, stablehlo ]
+    paths:
+      - 'programs/stablehlo-to-riscv/**'
+      - '.github/workflows/stablehlo-to-riscv.yml'
+  pull_request:
+    branches: [ main, stablehlo ]
+    paths:
+      - 'programs/stablehlo-to-riscv/**'
+      - '.github/workflows/stablehlo-to-riscv.yml'
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build-stablehlo-to-riscv:
+    permissions:
+      contents: write
+      actions: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120  # LLVM/StableHLO builds can take a long time
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          g++-14-riscv64-linux-gnu \
+          git \
+          cmake \
+          ninja-build \
+          build-essential \
+          python3
+        git submodule update --init --recursive --depth=1
+
+    - name: Cache LLVM build
+      uses: actions/cache@v3
+      with:
+        path: |
+          build/external/llvm-install
+          build/external/llvm-project-build
+        key: llvm-18.1.0-${{ runner.os }}-${{ hashFiles('programs/stablehlo-to-riscv/CMakeLists.txt') }}
+        restore-keys: |
+          llvm-18.1.0-${{ runner.os }}-
+
+    - name: Cache StableHLO build
+      uses: actions/cache@v3
+      with:
+        path: |
+          build/external/stablehlo-install
+          build/external/stablehlo-build
+        key: stablehlo-v1.0.0-${{ runner.os }}-${{ hashFiles('programs/stablehlo-to-riscv/CMakeLists.txt') }}
+        restore-keys: |
+          stablehlo-v1.0.0-${{ runner.os }}-
+
+    - name: Configure CMake
+      working-directory: ${{github.workspace}}
+      run: |
+        # Configure with cross-compilation for RISC-V
+        # Both ExternalProjects (LLVM/StableHLO) and final target use RISC-V cross-compiler
+        cmake -B build \
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+          -DSTRIPPED=ON \
+          -DCMAKE_C_COMPILER=riscv64-linux-gnu-gcc-14 \
+          -DCMAKE_CXX_COMPILER=riscv64-linux-gnu-g++-14 \
+          -G Ninja
+
+    - name: Build stablehlo_to_riscv (RISC-V guest binary)
+      working-directory: ${{github.workspace}}/build
+      run: |
+        # This will build LLVM, StableHLO (for host), then stablehlo_to_riscv (for RISC-V)
+        cmake --build . --target stablehlo_to_riscv --parallel $(nproc)
+
+    - name: Verify binary
+      run: |
+        file build/bin/stablehlo_to_riscv || file build/bin/stablehlo_to_riscv.elf
+        # Should show RISC-V binary
+        readelf -h build/bin/stablehlo_to_riscv 2>/dev/null || readelf -h build/bin/stablehlo_to_riscv.elf 2>/dev/null || true
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      if: success()
+      with:
+        name: stablehlo-to-riscv-riscv64
+        path: build/bin/stablehlo_to_riscv*
