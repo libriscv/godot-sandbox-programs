@@ -44,9 +44,9 @@ jobs:
         path: |
           build/external/llvm-install
           build/external/llvm-project-build
-        key: llvm-18.1.0-${{ runner.os }}-${{ hashFiles('programs/stablehlo-to-riscv/CMakeLists.txt') }}
+        key: llvm-0c2701fe-${{ runner.os }}-${{ hashFiles('programs/stablehlo-to-riscv/CMakeLists.txt') }}
         restore-keys: |
-          llvm-18.1.0-${{ runner.os }}-
+          llvm-0c2701fe-${{ runner.os }}-
 
     - name: Cache StableHLO build
       uses: actions/cache@v3
