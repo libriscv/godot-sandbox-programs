@@ -83,7 +83,7 @@ jobs:
         readelf -h build/bin/stablehlo_to_riscv 2>/dev/null || readelf -h build/bin/stablehlo_to_riscv.elf 2>/dev/null || true
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: success()
       with:
         name: stablehlo-to-riscv-riscv64
