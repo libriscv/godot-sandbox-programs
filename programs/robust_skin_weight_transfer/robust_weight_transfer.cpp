@@ -903,4 +903,5 @@ int main() {
 	ADD_API_FUNCTION(run_tests, "int", "", "Runs all tests");
 
 	halt();
+	return 0;
 }
