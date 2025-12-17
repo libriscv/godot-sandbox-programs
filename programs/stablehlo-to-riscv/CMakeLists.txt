@@ -84,9 +84,8 @@ else()
     set(LLVM_INSTALL_PREFIX ${EXTERNAL_PROJECTS_DIR}/llvm-install)
     set(STABLEHLO_INSTALL_PREFIX ${EXTERNAL_PROJECTS_DIR}/stablehlo-install)
     
-    # Build LLVM with MLIR enabled
+    # Build LLVM with MLIR enabled using stablehlo's tested commit
     # Use the LLVM commit hash from stablehlo project for better compatibility
-    # This is the commit that stablehlo v1.0.0 was tested with
     ExternalProject_Add(
         llvm-project
         GIT_REPOSITORY https://github.com/llvm/llvm-project.git
@@ -127,7 +126,7 @@ else()
         INSTALL_COMMAND ${CMAKE_COMMAND} --install .
         UPDATE_COMMAND ""
     )
-    
+        
     # Build StableHLO (depends on LLVM/MLIR)
     ExternalProject_Add(
         stablehlo
