@@ -96,6 +96,7 @@ else()
         BINARY_DIR ${EXTERNAL_PROJECTS_DIR}/llvm-project-build
         INSTALL_DIR ${LLVM_INSTALL_PREFIX}
         CMAKE_ARGS
+            -G Ninja
             -DCMAKE_INSTALL_PREFIX=${LLVM_INSTALL_PREFIX}
             -DCMAKE_BUILD_TYPE=Release
             -DLLVM_ENABLE_PROJECTS=mlir
@@ -140,6 +141,7 @@ else()
         INSTALL_DIR ${STABLEHLO_INSTALL_PREFIX}
         DEPENDS llvm-project
         CMAKE_ARGS
+            -G Ninja
             -DCMAKE_INSTALL_PREFIX=${STABLEHLO_INSTALL_PREFIX}
             -DCMAKE_BUILD_TYPE=Release
             -DMLIR_DIR=${LLVM_INSTALL_PREFIX}/lib/cmake/mlir
