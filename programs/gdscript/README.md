@@ -21,23 +21,26 @@ compiler.set_restrictions(true)
 Compiles basic GDScript to a buffer that is loadable as a Sandbox program.
 
 ```py
-var compiled_elf = compiler.vmcall("compile_to_elf", """
-func test():
-	var matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-	var sum = 0
-	for i in range(3):
-		for j in range(3):
-			sum = sum + matrix[i][j]
-	return sum
-""")
+	print("Loading sandboxed GDScript!")
+	var gdscript = Node.new()
+	gdscript.set_script(load("res://gdscript.elf"))
+	var compiled_elf = gdscript.compile("""
+func sum(n):
+	var total = 0
+	var i = 0
+	while i <= n:
+		total += i
+		i += 1
+	return total
+	""")
 
-var s = Sandbox.new()
-s.restrictions = true
-s.load_buffer(compiled_elf)
+	var s = Sandbox.new()
+	s.restrictions = true
+	s.load_buffer(compiled_elf)
 ```
 
-Calculates the sum:
+Calculate the sum:
 
 ```py
-print(s.vmcallv("test"))
+print("Sum: ", s.vmcallv("sum", 5))
 ```
