@@ -22,6 +22,7 @@ add_subdirectory(hello-world)
 # Build the examples that require full Linux/C++ support
 if (NOT EMBEDDED_RISCV)
 	add_subdirectory(asm)
+	add_subdirectory(gdscript)
 	add_subdirectory(libtcc)
 	add_subdirectory(luajit)
 	add_subdirectory(mir)
