@@ -1,6 +1,7 @@
 **/.build/
 **/.embedded/
 **/.zig/
+**/build/
 *.o
 *.a
 *.so

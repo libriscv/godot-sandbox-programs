@@ -25,7 +25,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y git cmake zip wget xz-utils
+        sudo apt install -y git cmake wget xz-utils
         git submodule update --init --recursive --depth=1
         # Install Zig
         wget https://ziglang.org/download/0.14.1/zig-x86_64-linux-0.14.1.tar.xz
@@ -38,26 +38,3 @@ jobs:
         cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSTRIPPED=ON
         cmake --build build --parallel 8
 
-    - name: Delete draft release(s)
-      uses: hugo19941994/delete-draft-releases@v1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Archive
-      shell: sh
-      run: |
-        cd build/bin
-        for i in *; do
-          mv $i $i.elf;
-          zip -r "${i}.zip" $i.elf;
-        done
-    - name: Release
-      uses: softprops/action-gh-release@v2
-      with:
-        name: Examples Nightly
-        files: |
-          build/bin/*.zip
-        tag_name: nightly
-        generate_release_notes: true
-        draft: true
-        prerelease: true
-        fail_on_unmatched_files: true
