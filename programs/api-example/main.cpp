@@ -1,6 +1,6 @@
 #include "api.hpp"
 
-static int32_t some_function_fast() {
+static Variant some_function_fast() {
   int32_t counter = 0;
 
   while (counter < 40000) {

@@ -42,7 +42,14 @@ jobs:
           mv $i $i.elf;
           zip -r "${i}.zip" $i.elf;
         done
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: examples
+        path: build/bin/*.zip
+        retention-days: 30
     - name: Release
+      if: github.event_name == 'push'
       uses: softprops/action-gh-release@v2
       with:
         name: Examples Nightly
