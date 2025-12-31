@@ -18,6 +18,7 @@ endfunction()
 
 # Build the trivial examples
 add_subdirectory(hello-world)
+add_subdirectory(api-example)
 
 # Build the examples that require full Linux/C++ support
 if (NOT EMBEDDED_RISCV)
