@@ -1,0 +1,90 @@
+name: C++ Tests - SceneTree Passthrough
+
+on:
+  push:
+    branches: [ main, scenetree-passthrough ]
+    paths:
+      - 'programs/scenetree_passthrough/**'
+      - 'programs/scenetree_common/**'
+      - '.github/workflows/tests.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'programs/scenetree_passthrough/**'
+      - 'programs/scenetree_common/**'
+      - '.github/workflows/tests.yml'
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  test-cpp:
+    name: C++ Build & Test (RISC-V)
+    runs-on: ubuntu-24.04
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+    
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build build-essential g++-14
+        
+    - name: Cache RISC-V toolchain
+      id: cache-riscv
+      uses: actions/cache@v4
+      with:
+        path: riscv64-toolchain
+        key: riscv-toolchain-${{ hashFiles('riscv.sh') }}
+        restore-keys: |
+          riscv-toolchain-
+    
+    - name: Download RISC-V toolchain
+      if: steps.cache-riscv.outputs.cache-hit != 'true'
+      run: |
+        curl -L https://toolchains.bootlin.com/downloads/releases/toolchains/riscv64-lp64d/tarballs/riscv64-lp64d--glibc--stable-2025.08-1.tar.xz -o riscv64-lp64d--glibc--stable-2025.08-1.tar.xz
+        tar -xf riscv64-lp64d--glibc--stable-2025.08-1.tar.xz
+        mv riscv64-lp64d--glibc--stable-2025.08-1 riscv64-toolchain
+        rm riscv64-lp64d--glibc--stable-2025.08-1.tar.xz
+        ls -la riscv64-toolchain/bin/ | head -20
+    
+    - name: Set up RISC-V toolchain in PATH
+      run: echo "$(pwd)/riscv64-toolchain/bin" >> $GITHUB_PATH
+    
+    - name: Create symlinks for riscv64-linux-gnu tools
+      run: |
+        cd riscv64-toolchain/bin
+        ln -sf riscv64-buildroot-linux-gnu-gcc riscv64-linux-gnu-gcc
+        ln -sf riscv64-buildroot-linux-gnu-g++ riscv64-linux-gnu-g++
+        ln -sf riscv64-buildroot-linux-gnu-ld riscv64-linux-gnu-ld
+        ln -sf riscv64-buildroot-linux-gnu-ar riscv64-linux-gnu-ar
+        ln -sf riscv64-buildroot-linux-gnu-ranlib riscv64-linux-gnu-ranlib
+        ln -sf riscv64-buildroot-linux-gnu-strip riscv64-linux-gnu-strip
+        ln -sf riscv64-buildroot-linux-gnu-as riscv64-linux-gnu-as
+        ln -sf riscv64-buildroot-linux-gnu-nm riscv64-linux-gnu-nm
+        ln -sf riscv64-buildroot-linux-gnu-objdump riscv64-linux-gnu-objdump
+        ln -sf riscv64-buildroot-linux-gnu-objcopy riscv64-linux-gnu-objcopy
+        ln -sf riscv64-buildroot-linux-gnu-readelf riscv64-linux-gnu-readelf
+        ln -sf riscv64-buildroot-linux-gnu-addr2line riscv64-linux-gnu-addr2line
+        ln -sf riscv64-buildroot-linux-gnu-elfedit riscv64-linux-gnu-elfedit
+        ln -sf riscv64-buildroot-linux-gnu-c++ riscv64-linux-gnu-c++
+        ln -sf riscv64-buildroot-linux-gnu-cpp riscv64-linux-gnu-cpp
+        ln -sf riscv64-buildroot-linux-gnu-gcov riscv64-linux-gnu-gcov
+        ln -sf riscv64-buildroot-linux-gnu-gcov-dump riscv64-linux-gnu-gcov-dump
+        ln -sf riscv64-buildroot-linux-gnu-gcov-tool riscv64-linux-gnu-gcov-tool
+        ln -sf riscv64-buildroot-linux-gnu-cc riscv64-linux-gnu-cc
+    
+    - name: Build scenetree_passthrough
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTRIPPED=ON
+        make -j$(nproc)
+    
+    - name: Verify toolchain
+      run: riscv64-linux-gnu-gcc --version
+    
+    - name: List built binaries
+      run: ls -la build/bin/

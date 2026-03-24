@@ -8,7 +8,7 @@ struct AsmjitResult {
 };
 extern "C" struct AsmjitResult assemble_to(const char *input, size_t size);
 
-static Variant assemble(String input) {
+PUBLIC Variant assemble(String input) {
 	// Assemble the input
 	const std::string input_str = input.utf8();
 	AsmjitResult result = assemble_to(input_str.data(), input_str.size());

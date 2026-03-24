@@ -577,7 +577,7 @@ bool test_find_matches_closest_surface_no_weights() {
 	return true;
 }
 
-static Variant robust_weight_transfer(Mesh source_mesh, Mesh target_mesh, Dictionary arguments, Array matched_array, Array interpolated_weights_array, Array inpainted_weights_array, Array smoothed_weights_array) {
+PUBLIC Variant robust_weight_transfer(Mesh source_mesh, Mesh target_mesh, Dictionary arguments, Array matched_array, Array interpolated_weights_array, Array inpainted_weights_array, Array smoothed_weights_array) {
 	if (!arguments.has("verbose") || !arguments.has("angle_threshold_degrees") || !arguments.has("distance_threshold") || !arguments.has("source_mesh_surface") || !arguments.has("target_mesh_surface")) {
 		std::cerr << "Missing required arguments" << std::endl;
 		return false;
@@ -846,7 +846,7 @@ bool test_robust_weight_transfer() {
 	return true;
 }
 
-static Variant run_tests() {
+PUBLIC Variant run_tests() {
 	bool all_tests_passed = true;
 	if (!test_find_closest_point_on_surface()) {
 		std::cerr << "test_find_closest_point_on_surface failed" << std::endl;

@@ -29,7 +29,7 @@ static int api_print(lua_State *L) {
 static lua_State *L;
 static constexpr bool VERBOSE = false;
 
-static Variant run(String code) {
+PUBLIC Variant run(String code) {
 	// Load a string as a script
 	const std::string utf = code.utf8();
 	luaL_loadbuffer(L, utf.c_str(), utf.size(), "@code");
@@ -53,7 +53,7 @@ static Variant run(String code) {
 	}
 }
 
-static Variant add_function(String function_name, Callable function) {
+PUBLIC Variant add_function(String function_name, Callable function) {
 	// Create a struct to store callback information
 	struct UserData {
 		Variant function;

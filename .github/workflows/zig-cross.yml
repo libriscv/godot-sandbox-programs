@@ -35,6 +35,8 @@ jobs:
       working-directory: ${{github.workspace}}
       run: |
         export PATH=$PWD/zig-x86_64-linux-0.14.1:$PATH
-        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSTRIPPED=ON
+        export CC="zig cc -target riscv64-linux-musl"
+        export CXX="zig c++ -target riscv64-linux-musl"
+        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSTRIPPED=ON -DCMAKE_TOOLCHAIN_FILE=cmake/zig-toolchain.cmake
         cmake --build build --parallel 8
 

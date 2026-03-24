@@ -1,10 +1,10 @@
 #include <api.hpp>
-static Variant test_memalign();
+PUBLIC Variant test_memalign();
 
-static Variant hello_world() {
+PUBLIC Variant hello_world() {
 	return "Hello, world!";
 }
-static Variant print_string(String str) {
+PUBLIC Variant print_string(String str) {
 	printf("String: %s\n", str.utf8().c_str());
 	fflush(stdout);
 	return Nil;
@@ -18,7 +18,7 @@ static long fib(long n, long acc, long prev)
 		return fib(n - 1, prev + acc, acc);
 }
 
-static Variant fibonacci(int n) {
+PUBLIC Variant fibonacci(int n) {
 	return fib(n, 0, 1);
 }
 
@@ -46,7 +46,7 @@ int main() {
 	halt();
 }
 
-Variant test_memalign() {
+PUBLIC Variant test_memalign() {
 	struct alignas(32) Test {
 		int a;
 		int b;

@@ -170,7 +170,7 @@ static Variant do_compile(const std::string &source_code, const std::string &ent
 	return Callable::Create<Variant()>(fun_addr);
 }
 
-static Variant compile(String code, String entry) {
+PUBLIC Variant compile(String code, String entry) {
 	const std::string utf = code.utf8();
 	const std::string entry_utf = entry.utf8();
 

@@ -6,3 +6,11 @@
 *.a
 *.so
 .vscode/
+/programs/scenetree_passthrough/__pycache__
+/riscv64-lp64d--glibc--stable-2025.08-1
+/.build_native
+/build_riscv
+/build_rsicv_final
+/.build_standalone
+/.build_test
+__pycache__
